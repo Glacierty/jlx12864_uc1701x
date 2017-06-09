@@ -2,7 +2,7 @@
 
 "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\arm\bin\armstlink2.dll" 
 
-"D:\development\ST\stm32\src_code\hello_lcd\EWARM\hello_lcd\Exe\hello_lcd.out" 
+"D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Exe\hello_lcd.out" 
 
 --plugin "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\arm\bin\armbat.dll" 
 

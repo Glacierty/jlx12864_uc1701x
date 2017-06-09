@@ -416,12 +416,14 @@ int fputc(int ch, FILE *f)
 
 void get_time_Task(void const *argument)
 {
-    uint32_t systick;
+   // uint32_t systick;
     
     HAL_StatusTypeDef status=HAL_ERROR;
+    RTC_DateTypeDef date;
     RTC_TimeTypeDef time;
-    BSP_LCD_SetTextColor(RGB_CODE_BLACK);//
-    BSP_LCD_SetBackColor( RGB_CODE_BLANK);
+  
+    BSP_LCD_SetTextColor(RGB_CODE_BLACK);
+    BSP_LCD_SetBackColor(RGB_CODE_BLANK);
     
     for(;;)
     {
@@ -429,40 +431,57 @@ void get_time_Task(void const *argument)
     status=HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BIN);
     if(status==HAL_OK)
     {
-      printf("current time----> hr:%2d min:%2d sec:%2d\r\n",time.Hours,time.Minutes,time.Seconds);
-      //HAL_UART_Transmit_IT(&huart1,"hello world!!\r\n",sizeof("hello world!!\r\n"));
+      printf("current time-> hr:%2d min:%2d sec:%2d\r\n",time.Hours,time.Minutes,time.Seconds);
+      
     }
-    systick=osKernelSysTick();
-    printf("current systicks:%8d\r\n",systick);
+     status=HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BIN);
+    if(status==HAL_OK)
+    {
+      printf("current date -> Year:%2d Month:%2d Date:%2d WeekDay:%2d\r\n",date.Year,date.Month,date.Date,date.WeekDay);
+      
+    }
+    //systick=osKernelSysTick();
+    //printf("current systicks:%8d\r\n",systick);
 
-    BSP_LCD_SetFont(&Font24);
-    BSP_LCD_DisplayStringAtLine(0,"GOODBYE");
+    //BSP_LCD_SetFont(&Font24);
+    //BSP_LCD_DisplayStringAtLine(0,"GOODBYE");
     
     BSP_LCD_SetFont(&Font8);
-    BSP_LCD_DisplayStringAtLine(3,"you son of a bitch!");
-    BSP_LCD_DisplayStringAtLine(4,"WKXBOOT NEVER GIVEUP!");
-    BSP_LCD_DisplayStringAtLine(5,"sys_tick:");
-    BSP_LCD_DisplayUint16DecAtLine( 45, 5, systick);
+    BSP_LCD_DisplayStringAtXposLine(0,0,"Year:");
+    BSP_LCD_DisplayStringAtXposLine(40,0,"Month:");
+    BSP_LCD_DisplayStringAtXposLine(85,0,"Date:");
+    
+    BSP_LCD_DisplayUint16DecAtXposLine(25,0,date.Year,2);
+    BSP_LCD_DisplayUint16DecAtXposLine(70,0,date.Month,2);
+    BSP_LCD_DisplayUint16DecAtXposLine(110,0,date.Date,2);
+    
+    BSP_LCD_DisplayStringAtXposLine(0,1,"Hour:");
+    BSP_LCD_DisplayStringAtXposLine(40,1,"Min:");
+    BSP_LCD_DisplayStringAtXposLine(85,1,"Sec:");
+    
+    BSP_LCD_DisplayUint16DecAtXposLine(25,1,time.Hours,2);
+    BSP_LCD_DisplayUint16DecAtXposLine(70,1,time.Minutes,2);
+    BSP_LCD_DisplayUint16DecAtXposLine(110,1,time.Seconds,2);
     
     BSP_LCD_SetFont(&Font16);
-    BSP_LCD_DisplayStringAtLine(3,"T");
-    BSP_LCD_DisplayUint32HexAtLine(11,3,systick);
+    BSP_LCD_DisplayStringAtXposLine(0,3,"WeekDay:");
+    BSP_LCD_DisplayUint16DecAtXposLine(0,3,date.WeekDay,2);
+    
+    BSP_LCD_DisplayStringAtXposLine(10,2,"<wkxboot>");
+
 
     BSP_LCD_DrawRect(0,0,128,64);
     BSP_LCD_DrawRect(2,2,124,60);
 
-    BSP_LCD_DrawCircle(20,20,20);
-    BSP_LCD_DrawCircle(60,20,20);
-    BSP_LCD_DrawCircle(100,20,20);
-    
+    //BSP_LCD_DrawCircle(20,20,20);
     //BSP_LCD_DrawEllipse(60,40,20,15);
     //BSP_LCD_FillRect( 60, 30, 30, 30);
     //BSP_LCD_DrawHLine(RGB_CODE_BLACK,0,32,128);
     //BSP_LCD_DrawVLine(RGB_CODE_BLACK,63,0,64);
     
-     systick=osKernelSysTick();
-    printf("current systicks:%8d\r\n",systick);
-    osDelay(2000);
+    //systick=osKernelSysTick();
+    //printf("current systicks:%8d\r\n",systick);
+    osDelay(1000);
     }
 }
 
@@ -471,7 +490,7 @@ void lcd_Task(void const *argument)
   uint32_t systick;
  for(;;)
  {
-   printf("task id:%d prio:%d\r\n",(uint32_t)osThreadGetId(),osThreadGetPriority(osThreadGetId()));
+    printf("task id:%d prio:%d\r\n",(uint32_t)osThreadGetId(),osThreadGetPriority(osThreadGetId()));
     systick=osKernelSysTick();
     printf("current systicks:%8d\r\n",systick);
     uc1701x_refresh_screen();

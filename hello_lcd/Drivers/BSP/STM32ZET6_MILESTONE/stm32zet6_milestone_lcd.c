@@ -371,6 +371,11 @@ void BSP_LCD_DisplayStringAtLine(uint16_t Line, uint8_t *pText)
   BSP_LCD_DisplayStringAt(0, LINE(Line),pText, LEFT_MODE);
 }
 
+void BSP_LCD_DisplayStringAtXposLine(uint16_t x_pos,uint16_t Line, uint8_t *pText)
+{
+  BSP_LCD_DisplayStringAt(x_pos, LINE(Line),pText, LEFT_MODE);
+}
+
 /**
   * @brief  Reads an LCD pixel.
   * @param  Xpos: X position 
@@ -931,15 +936,15 @@ static void LCD_SetDisplayWindow(uint16_t Xpos, uint16_t Ypos, uint16_t Width, u
 /**
   * @}
   */  
-void BSP_LCD_DisplayUint16HexAtLine(uint16_t x_pos ,uint16_t Line,uint16_t digital)
+void BSP_LCD_DisplayUint16HexAtXposLine(uint16_t x_pos ,uint16_t Line,uint16_t digit)
 {
   uint8_t str_src[]="0123456789ABCDEF";
   uint8_t str_tar[7];
 
   uint8_t lo;
   uint8_t hi;
-  hi=(uint8_t)(digital>>8);
-  lo=(uint8_t)(digital&0x00ff);
+  hi=(uint8_t)(digit>>8);
+  lo=(uint8_t)(digit&0x00ff);
   
   str_tar[0]='0';
   str_tar[1]='x';
@@ -953,14 +958,14 @@ void BSP_LCD_DisplayUint16HexAtLine(uint16_t x_pos ,uint16_t Line,uint16_t digit
   BSP_LCD_DisplayStringAt(x_pos, LINE(Line),str_tar, LEFT_MODE); 
 }
 
-void BSP_LCD_DisplayUint32HexAtLine(uint16_t x_pos ,uint16_t Line,uint32_t digital)
+void BSP_LCD_DisplayUint32HexAtXposLine(uint16_t x_pos ,uint16_t Line,uint32_t digit)
 {
   uint8_t b1,b2,b3,b4;
- 
-  b1=(uint8_t)(digital>>24);
-  b2=(uint8_t)(digital>>16);
-  b3=(uint8_t)(digital>>8);
-  b4=(uint8_t)digital;
+  
+  b1=(uint8_t)(digit>>24);
+  b2=(uint8_t)(digit>>16);
+  b3=(uint8_t)(digit>>8);
+  b4=(uint8_t)digit;
 
   uint8_t str_src[]="0123456789ABCDEF";
   uint8_t str_tar[11];
@@ -983,25 +988,26 @@ void BSP_LCD_DisplayUint32HexAtLine(uint16_t x_pos ,uint16_t Line,uint32_t digit
 /**
   * @}
   */  
-void BSP_LCD_DisplayUint16DecAtLine(uint16_t x_pos ,uint16_t Line,uint16_t digital)
+//digit range (65536----0)
+void BSP_LCD_DisplayUint16DecAtXposLine(uint16_t x_pos ,uint16_t Line,uint16_t digit,uint8_t cnt)
 {
   uint8_t str_src[]="0123456789";
   uint8_t str_tar[6];
   uint8_t k1,k2,k3,k4,k5;
+  uint8_t offset;
+  k1=digit/10000;
+  digit%=10000;
   
-  k1=digital/10000;
-  digital%=10000;
+  k2=digit/1000;
+  digit%=1000;
   
-  k2=digital/1000;
-  digital%=1000;
+  k3=digit/100;
+  digit%=100;
   
-  k3=digital/100;
-  digital%=100;
+  k4=digit/10;
+  digit%=10;
   
-  k4=digital/10;
-  digital%=10;
-  
-  k5=digital;
+  k5=digit;
 
   str_tar[0]=str_src[k1];
   str_tar[1]=str_src[k2];
@@ -1010,13 +1016,78 @@ void BSP_LCD_DisplayUint16DecAtLine(uint16_t x_pos ,uint16_t Line,uint16_t digit
   str_tar[4]=str_src[k5];
   
   str_tar[5]='\0';
-
-  BSP_LCD_DisplayStringAt(x_pos, LINE(Line),str_tar, LEFT_MODE); 
+  
+  if(cnt>5)
+  offset=0;
+  else
+  offset=5-cnt;
+  
+  BSP_LCD_DisplayStringAt(x_pos, LINE(Line),str_tar+offset, LEFT_MODE); 
 }
 /**
   * @}
   */  
+  /**
+  * @}
+  */  
+//digit range (-32768.99----32768.99)
+void BSP_LCD_DisplayfloatAtXposLine(uint16_t x_pos ,uint16_t Line,float fdigit)
+{
+  uint16_t digit;
+  float remain;
+
+
+  uint8_t str_src[]="0123456789";
+  uint8_t str_tar[10];
+  uint8_t k1,k2,k3,k4,k5;
   
+  if(fdigit<0)
+  {
+    str_tar[0]='-';
+    fdigit*=-1;
+  }
+  else
+  {
+    str_tar[0]='+';
+  }
+  
+  digit=(uint16_t)fdigit;
+  remain=fdigit-digit;
+  
+  
+  k1=digit/10000;
+  digit%=10000;
+  
+  k2=digit/1000;
+  digit%=1000;
+  
+  k3=digit/100;
+  digit%=100;
+  
+  k4=digit/10;
+  digit%=10;
+  
+  k5=digit;
+
+  str_tar[1]=str_src[k1];
+  str_tar[2]=str_src[k2];
+  str_tar[3]=str_src[k3];
+  str_tar[4]=str_src[k4];
+  str_tar[5]=str_src[k5];
+  str_tar[6]='.';
+
+  remain*=100;
+  digit=(uint16_t)remain;
+  k4=digit/10;
+  digit%=10;
+  k5=digit;
+  str_tar[7]=str_src[k4];
+  str_tar[8]=str_src[k5];
+  str_tar[9]='\0';
+  
+  
+  BSP_LCD_DisplayStringAt(x_pos, LINE(Line),str_tar, LEFT_MODE); 
+}
 /**
   * @}
   */ 

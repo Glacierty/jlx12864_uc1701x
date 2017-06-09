@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "D:\development\ST\stm32\src_code\hello_lcd\EWARM\settings\hello_lcd.hello_lcd.general.xcl" --backend -f "D:\development\ST\stm32\src_code\hello_lcd\EWARM\settings\hello_lcd.hello_lcd.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\settings\hello_lcd.hello_lcd.general.xcl" --backend -f "D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\settings\hello_lcd.hello_lcd.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "D:\development\ST\stm32\src_code\hello_lcd\EWARM\settings\hello_lcd.hello_lcd.general.xcl" "--debug_file=%~1" --backend -f "D:\development\ST\stm32\src_code\hello_lcd\EWARM\settings\hello_lcd.hello_lcd.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\settings\hello_lcd.hello_lcd.general.xcl" "--debug_file=%~1" --backend -f "D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\settings\hello_lcd.hello_lcd.driver.xcl" 
 
 @echo off 
 :end
