@@ -1031,7 +1031,7 @@ void BSP_LCD_DisplayUint16DecAtXposLine(uint16_t x_pos ,uint16_t Line,uint16_t d
   * @}
   */  
 //digit range (-32768.99----32768.99)
-void BSP_LCD_DisplayfloatAtXposLine(uint16_t x_pos ,uint16_t Line,float fdigit)
+void BSP_LCD_DisplayfloatAtXposLine(uint16_t x_pos ,uint16_t Line,float fdigit,uint8_t cnt)
 {
   uint16_t digit;
   float remain;
@@ -1040,7 +1040,7 @@ void BSP_LCD_DisplayfloatAtXposLine(uint16_t x_pos ,uint16_t Line,float fdigit)
   uint8_t str_src[]="0123456789";
   uint8_t str_tar[10];
   uint8_t k1,k2,k3,k4,k5;
-  
+  uint8_t offset;
   if(fdigit<0)
   {
     str_tar[0]='-';
@@ -1085,8 +1085,12 @@ void BSP_LCD_DisplayfloatAtXposLine(uint16_t x_pos ,uint16_t Line,float fdigit)
   str_tar[8]=str_src[k5];
   str_tar[9]='\0';
   
+  if(cnt>5)
+  offset=0;
+  else
+  offset=5-cnt;
   
-  BSP_LCD_DisplayStringAt(x_pos, LINE(Line),str_tar, LEFT_MODE); 
+  BSP_LCD_DisplayStringAt(x_pos, LINE(Line),str_tar+offset, LEFT_MODE); 
 }
 /**
   * @}

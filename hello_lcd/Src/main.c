@@ -439,49 +439,34 @@ void get_time_Task(void const *argument)
     {
       printf("current date -> Year:%2d Month:%2d Date:%2d WeekDay:%2d\r\n",date.Year,date.Month,date.Date,date.WeekDay);
       
-    }
-    //systick=osKernelSysTick();
-    //printf("current systicks:%8d\r\n",systick);
-
-    //BSP_LCD_SetFont(&Font24);
-    //BSP_LCD_DisplayStringAtLine(0,"GOODBYE");
-    
+    }  
     BSP_LCD_SetFont(&Font8);
-    BSP_LCD_DisplayStringAtXposLine(0,0,"Year:");
-    BSP_LCD_DisplayStringAtXposLine(40,0,"Month:");
-    BSP_LCD_DisplayStringAtXposLine(85,0,"Date:");
+    BSP_LCD_DisplayStringAtXposLine(2,1,"Year:");
+    BSP_LCD_DisplayStringAtXposLine(42,1,"Month:");
+    BSP_LCD_DisplayStringAtXposLine(87,1,"Date:");
     
-    BSP_LCD_DisplayUint16DecAtXposLine(25,0,date.Year,2);
-    BSP_LCD_DisplayUint16DecAtXposLine(70,0,date.Month,2);
-    BSP_LCD_DisplayUint16DecAtXposLine(110,0,date.Date,2);
+    BSP_LCD_DisplayUint16DecAtXposLine(27,1,date.Year,2);
+    BSP_LCD_DisplayUint16DecAtXposLine(72,1,date.Month,2);
+    BSP_LCD_DisplayUint16DecAtXposLine(112,1,date.Date,2);
     
-    BSP_LCD_DisplayStringAtXposLine(0,1,"Hour:");
-    BSP_LCD_DisplayStringAtXposLine(40,1,"Min:");
-    BSP_LCD_DisplayStringAtXposLine(85,1,"Sec:");
+    BSP_LCD_DisplayStringAtXposLine(2,2,"Hour:");
+    BSP_LCD_DisplayStringAtXposLine(42,2,"Min:");
+    BSP_LCD_DisplayStringAtXposLine(87,2,"Sec:");
     
-    BSP_LCD_DisplayUint16DecAtXposLine(25,1,time.Hours,2);
-    BSP_LCD_DisplayUint16DecAtXposLine(70,1,time.Minutes,2);
-    BSP_LCD_DisplayUint16DecAtXposLine(110,1,time.Seconds,2);
+    BSP_LCD_DisplayUint16DecAtXposLine(27,2,time.Hours,2);
+    BSP_LCD_DisplayUint16DecAtXposLine(72,2,time.Minutes,2);
+    BSP_LCD_DisplayUint16DecAtXposLine(112,2,time.Seconds,2);
     
     BSP_LCD_SetFont(&Font16);
     BSP_LCD_DisplayStringAtXposLine(0,3,"WeekDay:");
-    BSP_LCD_DisplayUint16DecAtXposLine(0,3,date.WeekDay,2);
+    BSP_LCD_DisplayUint16DecAtXposLine(88,3,date.WeekDay,2);
     
     BSP_LCD_DisplayStringAtXposLine(10,2,"<wkxboot>");
 
 
     BSP_LCD_DrawRect(0,0,128,64);
-    BSP_LCD_DrawRect(2,2,124,60);
 
-    //BSP_LCD_DrawCircle(20,20,20);
-    //BSP_LCD_DrawEllipse(60,40,20,15);
-    //BSP_LCD_FillRect( 60, 30, 30, 30);
-    //BSP_LCD_DrawHLine(RGB_CODE_BLACK,0,32,128);
-    //BSP_LCD_DrawVLine(RGB_CODE_BLACK,63,0,64);
-    
-    //systick=osKernelSysTick();
-    //printf("current systicks:%8d\r\n",systick);
-    osDelay(1000);
+    osDelay(300);
     }
 }
 
@@ -497,7 +482,7 @@ void lcd_Task(void const *argument)
     systick=osKernelSysTick();
     printf("current systicks:%8d\r\n",systick);
 
-    osDelay(4000);
+    osDelay(300);
  }
 }
 /* USER CODE END 4 */
