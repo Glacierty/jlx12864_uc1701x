@@ -1,7 +1,9 @@
 #ifndef __STM32ZET6_MILESTONE_H
 #define __STM32ZET6_MILESTONE_H
-#include "stm32f1xx_hal.h"
 
+
+void BSP_BMP180_init();
+uint32_t BSP_BMP180_read_true_temperature_and_pressure(int32_t* ptr_t,int32_t* ptr_p);
 
 
 

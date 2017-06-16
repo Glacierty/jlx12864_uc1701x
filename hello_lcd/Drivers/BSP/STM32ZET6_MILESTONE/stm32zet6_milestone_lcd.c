@@ -62,6 +62,7 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32f1xx_hal.h"
 #include "stm32zet6_milestone_lcd.h"
 #include "fonts.h"
 #include "font24.c"
@@ -988,39 +989,44 @@ void BSP_LCD_DisplayUint32HexAtXposLine(uint16_t x_pos ,uint16_t Line,uint32_t d
 /**
   * @}
   */  
-//digit range (65536----0)
-void BSP_LCD_DisplayUint16DecAtXposLine(uint16_t x_pos ,uint16_t Line,uint16_t digit,uint8_t cnt)
+//digit range (999999----0)
+void BSP_LCD_DisplayUint16DecAtXposLine(uint16_t x_pos ,uint16_t Line,uint32_t digit,uint8_t cnt)
 {
   uint8_t str_src[]="0123456789";
-  uint8_t str_tar[6];
-  uint8_t k1,k2,k3,k4,k5;
+  uint8_t str_tar[7];
+  uint8_t k1,k2,k3,k4,k5,k6;
   uint8_t offset;
-  k1=digit/10000;
+  
+  digit%=1000000;//digital <=999999
+  
+  k1=digit/100000;
+  digit%=100000;
+  
+  k2=digit/10000;
   digit%=10000;
   
-  k2=digit/1000;
+  k3=digit/1000;
   digit%=1000;
   
-  k3=digit/100;
+  k4=digit/100;
   digit%=100;
   
-  k4=digit/10;
+  k5=digit/10;
   digit%=10;
-  
-  k5=digit;
 
+  k6=digit;
   str_tar[0]=str_src[k1];
   str_tar[1]=str_src[k2];
   str_tar[2]=str_src[k3];
   str_tar[3]=str_src[k4];
   str_tar[4]=str_src[k5];
+  str_tar[5]=str_src[k6];
+  str_tar[6]='\0';
   
-  str_tar[5]='\0';
-  
-  if(cnt>5)
+  if(cnt>6)
   offset=0;
   else
-  offset=5-cnt;
+  offset=6-cnt;
   
   BSP_LCD_DisplayStringAt(x_pos, LINE(Line),str_tar+offset, LEFT_MODE); 
 }
@@ -1086,9 +1092,14 @@ void BSP_LCD_DisplayfloatAtXposLine(uint16_t x_pos ,uint16_t Line,float fdigit,u
   str_tar[9]='\0';
   
   if(cnt>5)
+  {
   offset=0;
+  }
   else
+  {
   offset=5-cnt;
+  str_tar[offset]=str_tar[0];
+  }
   
   BSP_LCD_DisplayStringAt(x_pos, LINE(Line),str_tar+offset, LEFT_MODE); 
 }

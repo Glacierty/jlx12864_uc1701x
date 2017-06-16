@@ -24,7 +24,7 @@
         <LeaveTargetRunning>_ 0</LeaveTargetRunning>
     </JLinkDriver>
     <DebugChecksum>
-        <Checksum>3584998908</Checksum>
+        <Checksum>2419525319</Checksum>
     </DebugChecksum>
     <Exceptions>
         <StopOnUncaught>_ 0</StopOnUncaught>
@@ -76,8 +76,11 @@
         <Probe0>I0</Probe0>
         <ProbeSetup0>2 1 1 2 0 0</ProbeSetup0>
     </PowerProbe>
+    <InterruptStripe>
+        <Sort>1</Sort>
+    </InterruptStripe>
     <Trace2>
-        <Enabled>0</Enabled>
+        <Enabled>1</Enabled>
         <ShowSource>0</ShowSource>
     </Trace2>
     <SWOTraceWindow>

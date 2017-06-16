@@ -1,4 +1,5 @@
 ﻿D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Obj\hello_lcd.pbd
+D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Obj\bmp180.pbi
 D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Obj\cmsis_os.pbi
 D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Obj\croutine.pbi
 D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Obj\event_groups.pbi
@@ -15,6 +16,7 @@ D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Obj\
 D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Obj\stm32f1xx_hal_flash_ex.pbi
 D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Obj\stm32f1xx_hal_gpio.pbi
 D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Obj\stm32f1xx_hal_gpio_ex.pbi
+D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Obj\stm32f1xx_hal_i2c.pbi
 D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Obj\stm32f1xx_hal_msp.pbi
 D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Obj\stm32f1xx_hal_pwr.pbi
 D:\development\ST\stm32\src_code\jlx12864_uc1701x\hello_lcd\EWARM\hello_lcd\Obj\stm32f1xx_hal_rcc.pbi

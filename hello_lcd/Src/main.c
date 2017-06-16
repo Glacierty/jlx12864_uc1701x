@@ -55,10 +55,15 @@
 #include "lcd.h"
 #include "uc1701x.h"
 #include "stm32zet6_milestone_lcd.h"
+#include "stm32zet6_milestone.h"
+#include "debug_cfg.h"
 
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
+#define  MODULE      "@MAIN_module@"
+I2C_HandleTypeDef hi2c1;
+
 RTC_HandleTypeDef hrtc;
 
 SPI_HandleTypeDef hspi1;
@@ -75,7 +80,8 @@ osThreadId gettimeTaskHandle;
 osThreadId lcdTaskHandle;
 extern LCD_DrvTypeDef uc1701x_drv;
 LCD_DrvTypeDef *ptr_lcd_drv=&uc1701x_drv;
-
+int32_t true_t,true_p;
+uint8_t *fireware_ver="0.0.1";
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -85,6 +91,7 @@ static void MX_DMA_Init(void);
 static void MX_RTC_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_I2C1_Init(void);
 void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
@@ -97,13 +104,13 @@ void lcd_Task(void const *argument);
 /* USER CODE BEGIN 0 */
 void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName)
 {
-  printf("task stack overflow!name:%s\r\n",pcTaskName);
+  DEBUG_INFO("task stack overflow!name:%s\r\n",pcTaskName);
   
 }
 
 void vApplicationMallocFailedHook(void)
 {
-   printf("task mem err!\r\n");
+   DEBUG_INFO("task mem err!\r\n");
 }
 /* USER CODE END 0 */
 
@@ -136,9 +143,15 @@ int main(void)
   MX_RTC_Init();
   MX_SPI1_Init();
   MX_USART1_UART_Init();
+  MX_I2C1_Init();
 
   /* USER CODE BEGIN 2 */
   BSP_LCD_Init();
+  DEBUG_INFO("******************************************************\r\n");
+  DEBUG_INFO("         fireware version:%s\r\n",fireware_ver) ;
+  DEBUG_INFO("         compile date:%s\r\n",__DATE__) ; 
+  DEBUG_INFO("         compile time:%s\r\n",__TIME__) ;
+  DEBUG_INFO("******************************************************\r\n");
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -245,6 +258,26 @@ void SystemClock_Config(void)
 
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
+}
+
+/* I2C1 init function */
+static void MX_I2C1_Init(void)
+{
+
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
 }
 
 /* RTC init function */
@@ -390,12 +423,10 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PB0 PB1 PB2 PB10 
                            PB11 PB12 PB13 PB14 
-                           PB15 PB3 PB4 PB8 
-                           PB9 */
+                           PB15 PB3 PB4 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_10 
                           |GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14 
-                          |GPIO_PIN_15|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_8 
-                          |GPIO_PIN_9;
+                          |GPIO_PIN_15|GPIO_PIN_3|GPIO_PIN_4;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
@@ -427,17 +458,17 @@ void get_time_Task(void const *argument)
     
     for(;;)
     {
-    printf("task id:%d prio:%d\r\n",(uint32_t)osThreadGetId(),osThreadGetPriority(osThreadGetId()));
+    //DEBUG_INFO("task id:%d prio:%d\r\n",(uint32_t)osThreadGetId(),osThreadGetPriority(osThreadGetId()));
     status=HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BIN);
     if(status==HAL_OK)
     {
-      printf("current time-> hr:%2d min:%2d sec:%2d\r\n",time.Hours,time.Minutes,time.Seconds);
+     //DEBUG_INFO("current time-> hr:%2d min:%2d sec:%2d\r\n",time.Hours,time.Minutes,time.Seconds);
       
     }
      status=HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BIN);
     if(status==HAL_OK)
     {
-      printf("current date -> Year:%2d Month:%2d Date:%2d WeekDay:%2d\r\n",date.Year,date.Month,date.Date,date.WeekDay);
+      //DEBUG_INFO("current date -> Year:%2d Month:%2d Date:%2d WeekDay:%2d\r\n",date.Year,date.Month,date.Date,date.WeekDay);
       
     }  
     BSP_LCD_SetFont(&Font8);
@@ -458,11 +489,13 @@ void get_time_Task(void const *argument)
     BSP_LCD_DisplayUint16DecAtXposLine(112,2,time.Seconds,2);
     
     BSP_LCD_SetFont(&Font16);
-    BSP_LCD_DisplayStringAtXposLine(0,3,"WeekDay:");
-    BSP_LCD_DisplayUint16DecAtXposLine(88,3,date.WeekDay,2);
+    BSP_LCD_DisplayStringAtXposLine(0,3,"P:");
+    BSP_LCD_DisplayfloatAtXposLine(22,3,true_p/1000.0,3);
+    BSP_LCD_DisplayStringAtXposLine(95,3,"Kpa");
     
-    BSP_LCD_DisplayStringAtXposLine(10,2,"<wkxboot>");
-
+    BSP_LCD_DisplayStringAtXposLine(0,2,"T:");
+    BSP_LCD_DisplayfloatAtXposLine(22,2,true_t/10.0,2);
+    BSP_LCD_DisplayStringAtXposLine(88,2,"C");
 
     BSP_LCD_DrawRect(0,0,128,64);
 
@@ -475,12 +508,12 @@ void lcd_Task(void const *argument)
   uint32_t systick;
  for(;;)
  {
-    printf("task id:%d prio:%d\r\n",(uint32_t)osThreadGetId(),osThreadGetPriority(osThreadGetId()));
+    //DEBUG_INFO("task id:%d prio:%d\r\n",(uint32_t)osThreadGetId(),osThreadGetPriority(osThreadGetId()));
     systick=osKernelSysTick();
-    printf("current systicks:%8d\r\n",systick);
+    //DEBUG_INFO("current systicks:%8d\r\n",systick);
     uc1701x_refresh_screen();
     systick=osKernelSysTick();
-    printf("current systicks:%8d\r\n",systick);
+    //DEBUG_INFO("current systicks:%8d\r\n",systick);
 
     osDelay(300);
  }
@@ -492,12 +525,18 @@ void StartDefaultTask(void const * argument)
 {
 
   /* USER CODE BEGIN 5 */
+  HAL_StatusTypeDef status;
+  
+  BSP_BMP180_init();
   /* Infinite loop */
   for(;;)
   {
-    printf("task id:%d prio:%d\r\n",(uint32_t)osThreadGetId(),osThreadGetPriority(osThreadGetId()));
+    BSP_BMP180_read_true_temperature_and_pressure(&true_t,&true_p);
+    DEBUG_INFO("true temperature:%d true pressure:%d\r\n",true_t,true_p);
+    
+    DEBUG_INFO("task id:%d prio:%d\r\n",(uint32_t)osThreadGetId(),osThreadGetPriority(osThreadGetId()));
     HAL_UART_Transmit_IT(&huart1,"hello world!!\r\n",sizeof("hello world!!\r\n"));
-    osDelay(5000);
+    osDelay(2000);
     
   }
   /* USER CODE END 5 */ 
@@ -531,7 +570,9 @@ void assert_failed(uint8_t* file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
-    ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    ex: DEBUG_INFO("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  
+  DEBUG_INFO("Wrong parameters value: file %s on line %d\r\n", file, line);
   /* USER CODE END 6 */
 
 }
